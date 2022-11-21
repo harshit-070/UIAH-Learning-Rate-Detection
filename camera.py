@@ -1,10 +1,11 @@
 import cv2
 from deepface import DeepFace
-from matplotlib import pyplot as plt
+from app import db
+from app.models import Normalizations
 
 
 class Video(object):
-    def __init__(self):
+    def __init__(self, data):
         self.video = cv2.VideoCapture(0)
         self.faceCascade = cv2.CascadeClassifier(
             cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
@@ -27,11 +28,14 @@ class Video(object):
             "neutral": self.n,
         }
         self.normalization = 0
+        self.user_id = data
 
     def __del__(self):
         self.video.release()
 
-    def get_frame(self):
+    def get_frame(
+        self,
+    ):
         ret, frame = self.video.read()
         result = DeepFace.analyze(frame, actions=["emotion"], enforce_detection=False)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -49,7 +53,7 @@ class Video(object):
             (0, 0, 255),
             cv2.LINE_4,
         )
-        cv2.imshow("Original video", frame)
+
         # if result['dominant_emotion'] == 'angry':
         if result["dominant_emotion"] == "angry":
             self.length = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -82,6 +86,13 @@ class Video(object):
         self.normalization = (
             self.a + self.d + self.f + self.h + self.s + self.n
         ) / total
+        normalization = Normalizations.query.filter_by(user_id=self.user_id).first()
+        if normalization.has_updated == 0:
+            normalization.normalization += normalization.previous_normalization
+            normalization.has_updated = 1
+        normalization.previous_normalization = self.normalization
         print(self.normalization)
+        db.session.add(normalization)
+        db.session.commit()
         ret, jpg = cv2.imencode(".jpg", frame)
         return jpg.tobytes()

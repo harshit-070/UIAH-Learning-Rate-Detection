@@ -6,14 +6,16 @@ from flask import (
     url_for,
     session,
     g,
-    flash,
     Response,
 )
 from werkzeug.urls import url_parse
 from app.forms import LoginForm, RegistrationForm, QuestionForm
-from app.models import User, Questions
+from app.models import User, Questions, Answers, Normalizations
 from app import db
 from camera import Video
+from identify import learning_speed
+
+number_of_questions = 2
 
 
 @app.before_request
@@ -75,8 +77,36 @@ def question(id):
         return redirect(url_for("login"))
     if request.method == "POST":
         option = request.form["options"]
+        answer = Answers.query.filter_by(user_id=g.user.id, question_id=id).first()
+        normalization = Normalizations.query.filter_by(user_id=g.user.id).first()
+        if not normalization:
+            normalization = Normalizations(
+                user_id=g.user.id,
+                current_question=id,
+                normalization=0,
+                previous_normalization=0,
+            )
+        else:
+            if normalization.current_question == number_of_questions:
+                normalization.normalization = 0
+                normalization.previous_normalization = 0
+                normalization.current_question = id
+            normalization.has_updated = 0
+            normalization.current_question = id
+
         if option == q.ans:
-            session["marks"] += 10
+            if not answer:
+                answer = Answers(user_id=g.user.id, question_id=id, is_correct=1)
+            else:
+                answer.is_correct = 1
+        else:
+            if not answer:
+                answer = Answers(user_id=g.user.id, question_id=id, is_correct=0)
+            else:
+                answer.is_correct = 0
+        db.session.add(answer)
+        db.session.add(normalization)
+        db.session.commit()
         return redirect(url_for("question", id=(id + 1)))
     form.options.choices = [(q.a, q.a), (q.b, q.b), (q.c, q.c), (q.d, q.d)]
     return render_template(
@@ -94,7 +124,9 @@ def gen(camera):
 
 @app.route("/video")
 def video():
-    return Response(gen(Video()), mimetype="multipart/x-mixed-replace; boundary=frame")
+    return Response(
+        gen(Video(g.user.id)), mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
 
 
 @app.route("/score")
@@ -102,7 +134,6 @@ def score():
     if not g.user:
         return redirect(url_for("login"))
     g.user.marks = session["marks"]
-    # db.session.commit()
     return render_template("score.html", title="Final Score")
 
 
@@ -113,3 +144,11 @@ def logout():
     session.pop("user_id", None)
     session.pop("marks", None)
     return redirect(url_for("home"))
+
+
+@app.route("/testing")
+def test():
+    if not g.user:
+        return redirect(url_for("login"))
+
+    return learning_speed(g.user.id)

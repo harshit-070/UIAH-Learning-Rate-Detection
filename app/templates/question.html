@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block content %}
+<img src="{{ url_for('video') }}" width="250px" height="250px" />
 <div class="ques-div">
   <form method="post" novalidate>
     <h2 class="qnum">Question {{q.q_id}}</h2>
@@ -8,11 +9,6 @@
     <div class="options-div">{{ form.options(class="list-unstyled") }}</div>
     {{ form.submit(class="btn btn-primary btn-lg sub-btn") }}
   </form>
-  <img src="{{ url_for('video') }}" width="250px" height="250px" />
-
-  <!-- <span class="check-circle">
-            <i class="fas fa-check-circle"></i>
-        </span> -->
 </div>
 
 {% endblock %}
