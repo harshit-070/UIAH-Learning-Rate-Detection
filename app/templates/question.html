@@ -1,9 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <div class="question-body">
-  <div class="video-grid">
-     <img src="{{ url_for('video') }}" width="250px" height="250px" />
-  </div>
   <div class="ques-div">
+    <img src="{{ url_for('video') }}" width="250px" height="250px" />
     <form method="post" novalidate>
       <h2 class="qnum">Question {{q.q_id}}</h2>
       <div class="dotted-spaced"></div>

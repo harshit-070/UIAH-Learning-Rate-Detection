@@ -199,26 +199,13 @@ nav {
 }
 
 /* Question Page CSS */
-.question-body{
-    display:flex;
-    flex-direction: row;
+.question-body {
+  display: flex;
+  flex-direction: row;
 }
 
-.video-grid{
-    height: 5rem;
-    width: 5rem;
-}
 .ques-div {
-<<<<<<< HEAD
-    background-color: #fff;
-    justify-content: center;
-    align-items: center;
-=======
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
->>>>>>> origin/master
+  flex-grow: 75;
 }
 
 .qnum {
@@ -347,4 +334,57 @@ form hr {
   align-items: center;
   margin-top: 50px;
   width: 60%;
+}
+
+.question_container {
+  display: grid;
+  gap: 25px;
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: 1fr;
+  padding: 50px;
+  width: 80%;
+  margin: auto;
+  align-items: center;
+}
+
+.qnum_2 {
+  margin-top: 25px;
+  color: #989cad;
+}
+
+.btn_2 {
+  margin-left: 0 !important;
+}
+
+.ques-heading_2 {
+  font-weight: 800;
+  margin-bottom: 33px;
+  color: #3e4667;
+  max-width: 100%;
+}
+
+.options-div_2 li {
+  box-sizing: content-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row-reverse;
+  border: 3px solid #989cad;
+  border-radius: 15px;
+  padding: 10px;
+  width: 95%;
+  height: 30px;
+  margin-bottom: 17px;
+  margin-top: 15px;
+}
+
+.options-div_2 label {
+  font-size: 20px;
+  color: #3e4667;
+  margin-top: 7px;
+}
+
+.video_2 {
+  width: 100%;
+  height: 80%;
 }

@@ -110,7 +110,7 @@ def question(id):
         return redirect(url_for("question", id=(id + 1)))
     form.options.choices = [(q.a, q.a), (q.b, q.b), (q.c, q.c), (q.d, q.d)]
     return render_template(
-        "question.html", form=form, q=q, title="Question {}".format(id)
+        "question_2.html", form=form, q=q, title="Question {}".format(id)
     )
 
 
