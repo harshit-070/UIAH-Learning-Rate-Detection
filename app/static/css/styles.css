@@ -216,10 +216,17 @@ nav {
 
 
 /* Question Page CSS */
+.question-body{
+    display:flex;
+    flex-direction: row;
+}
 
+.video-grid{
+    height: 5rem;
+    width: 5rem;
+}
 .ques-div {
     background-color: #fff;
-    display: flex;
     justify-content: center;
     align-items: center;
 }

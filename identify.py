@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from app.models import User, Questions, Answers, Normalizations
 
-df = pd.read_csv(r".\Synthetic_dataset.csv")
+df = pd.read_csv(r"./Synthetic_dataset.csv")
 
 
 def learning_speed(user_id):

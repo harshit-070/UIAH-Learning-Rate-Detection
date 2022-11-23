@@ -1,14 +1,18 @@
 {% extends 'base.html' %} {% block content %}
-<img src="{{ url_for('video') }}" width="250px" height="250px" />
-<div class="ques-div">
-  <form method="post" novalidate>
-    <h2 class="qnum">Question {{q.q_id}}</h2>
-    <div class="dotted-spaced"></div>
-    <hr />
-    <h1 class="ques-heading">{{q.ques}}</h1>
-    <div class="options-div">{{ form.options(class="list-unstyled") }}</div>
-    {{ form.submit(class="btn btn-primary btn-lg sub-btn") }}
-  </form>
+<div class="question-body">
+  <div class="video-grid">
+     <img src="{{ url_for('video') }}" width="250px" height="250px" />
+  </div>
+  <div class="ques-div">
+    <form method="post" novalidate>
+      <h2 class="qnum">Question {{q.q_id}}</h2>
+      <div class="dotted-spaced"></div>
+      <hr />
+      <h1 class="ques-heading">{{q.ques}}</h1>
+      <div class="options-div">{{ form.options(class="list-unstyled") }}</div>
+      {{ form.submit(class="btn btn-primary btn-lg sub-btn") }}
+    </form>
+  </div>
 </div>
 
 {% endblock %}
