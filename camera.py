@@ -54,7 +54,6 @@ class Video(object):
             cv2.LINE_4,
         )
 
-        # if result['dominant_emotion'] == 'angry':
         if result["dominant_emotion"] == "angry":
             self.length = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
             self.a = self.a + 1
@@ -87,6 +86,13 @@ class Video(object):
             self.a + self.d + self.f + self.h + self.s + self.n
         ) / total
         normalization = Normalizations.query.filter_by(user_id=self.user_id).first()
+        if not normalization:
+            normalization = Normalizations(
+                user_id=self.user_id,
+                current_question=1,
+                normalization=0,
+                previous_normalization=0,
+            )
         if normalization.has_updated == 0:
             normalization.normalization += normalization.previous_normalization
             normalization.has_updated = 1
