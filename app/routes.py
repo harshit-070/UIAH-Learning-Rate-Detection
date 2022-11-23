@@ -110,7 +110,7 @@ def question(id):
         return redirect(url_for("question", id=(id + 1)))
     form.options.choices = [(q.a, q.a), (q.b, q.b), (q.c, q.c), (q.d, q.d)]
     return render_template(
-        "question_2.html", form=form, q=q, title="Question {}".format(id)
+        "question.html", form=form, q=q, title="Question {}".format(id)
     )
 
 
@@ -131,10 +131,13 @@ def video():
 
 @app.route("/score")
 def score():
+
     if not g.user:
         return redirect(url_for("login"))
-    g.user.marks = session["marks"]
-    return render_template("score.html", title="Final Score")
+
+    learner = learning_speed(g.user.id)
+
+    return render_template("score.html", result=0)
 
 
 @app.route("/logout")

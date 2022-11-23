@@ -97,7 +97,6 @@ class Video(object):
             normalization.normalization += normalization.previous_normalization
             normalization.has_updated = 1
         normalization.previous_normalization = self.normalization
-        print(self.normalization)
         db.session.add(normalization)
         db.session.commit()
         ret, jpg = cv2.imencode(".jpg", frame)
