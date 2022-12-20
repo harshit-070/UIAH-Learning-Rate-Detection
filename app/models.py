@@ -38,6 +38,8 @@ class Answers(db.Model):
     user_id = db.Column(db.Integer)
     question_id = db.Column(db.Integer)
     is_correct = db.Column(db.Integer)
+    start_at = db.Column(db.Integer)
+    end_at = db.Column(db.Integer)
 
 
 class Normalizations(db.Model):

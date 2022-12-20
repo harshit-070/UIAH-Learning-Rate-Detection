@@ -14,6 +14,7 @@ from app.models import User, Questions, Answers, Normalizations
 from app import db
 from camera import Video
 from identify import learning_speed
+import time
 
 number_of_questions = 2
 
@@ -55,7 +56,7 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.password.data)
+        user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -71,13 +72,21 @@ def register():
 def question(id):
     form = QuestionForm()
     q = Questions.query.filter_by(q_id=id).first()
+
     if not q:
         return redirect(url_for("score"))
     if not g.user:
         return redirect(url_for("login"))
+    answer = Answers.query.filter_by(user_id=g.user.id, question_id=id).first()
+    if not answer:
+        answer = Answers(
+            user_id=g.user.id, question_id=id, is_correct=0, start_at=int(time.time())
+        )
+    answer.start_at = int(time.time())
+    db.session.add(answer)
+    db.session.commit()
     if request.method == "POST":
         option = request.form["options"]
-        answer = Answers.query.filter_by(user_id=g.user.id, question_id=id).first()
         normalization = Normalizations.query.filter_by(user_id=g.user.id).first()
         if not normalization:
             normalization = Normalizations(
@@ -104,6 +113,7 @@ def question(id):
                 answer = Answers(user_id=g.user.id, question_id=id, is_correct=0)
             else:
                 answer.is_correct = 0
+        answer.end_at = int(time.time())
         db.session.add(answer)
         db.session.add(normalization)
         db.session.commit()
@@ -137,7 +147,7 @@ def score():
 
     learner = learning_speed(g.user.id)
 
-    return render_template("score.html", result=0)
+    return render_template("score.html", result=int(learner))
 
 
 @app.route("/logout")
